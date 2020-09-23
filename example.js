@@ -1,4 +1,4 @@
-
+const debug = require('debug')('8888888888:app');
 var session = require('./');
 var Koa = require('koa');
 var app = new Koa();
@@ -9,8 +9,12 @@ app.use(session(app));
 
 app.use(function* (next){
   if ('/favicon.ico' == this.path) return;
-  var n = this.session.views || 0;
+  // var n = this.session.views || 0;
+  let n = 1;
   this.session.views = ++n;
+
+  debug('this.session assignment fninsh')
+
   this.body = n + ' views';
 });
 

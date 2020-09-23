@@ -1,6 +1,6 @@
 'use strict';
 
-const debug = require('debug')('koa-session');
+const debug = require('debug')('8888888888:koa-session');
 const ContextSession = require('./lib/context');
 const util = require('./lib/util');
 const assert = require('assert');
@@ -22,6 +22,9 @@ const _CONTEXT_SESSION = Symbol('context#_contextSession');
  */
 
 module.exports = function(opts, app) {
+
+  debug('welcome to debug', {name:"ldf"});
+
   // session(app[, opts])
   if (opts && typeof opts.use === 'function') {
     [ app, opts ] = [ opts, app ];
@@ -31,10 +34,13 @@ module.exports = function(opts, app) {
     throw new TypeError('app instance required: `session(opts, app)`');
   }
 
-  opts = formatOpts(opts);
-  extendContext(app.context, opts);
+  opts = formatOpts(opts);          // 格式化配置项，设置一些默认值
+  extendContext(app.context, opts); // 划重点，给 app.ctx 定义了 session对象
 
   return async function session(ctx, next) {
+  
+    debug('http request is comming...');
+    
     const sess = ctx[CONTEXT_SESSION];
     if (sess.store) await sess.initFromExternal();
     try {
@@ -125,9 +131,11 @@ function extendContext(context, opts) {
   if (context.hasOwnProperty(CONTEXT_SESSION)) {
     return;
   }
+
   Object.defineProperties(context, {
     [CONTEXT_SESSION]: {
       get() {
+        debug('[CONTEXT_SESSION] get')
         if (this[_CONTEXT_SESSION]) return this[_CONTEXT_SESSION];
         this[_CONTEXT_SESSION] = new ContextSession(this, opts);
         return this[_CONTEXT_SESSION];
@@ -135,9 +143,11 @@ function extendContext(context, opts) {
     },
     session: {
       get() {
+        debug('session get')
         return this[CONTEXT_SESSION].get();
       },
       set(val) {
+        debug('session set:',val)
         this[CONTEXT_SESSION].set(val);
       },
       configurable: true,
