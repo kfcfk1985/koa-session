@@ -7,15 +7,15 @@ app.keys = ['some secret hurr'];
 
 app.use(session(app));
 
-app.use(function* (next){
+app.use(async (ctx, next) => {
   if ('/favicon.ico' == this.path) return;
-  // var n = this.session.views || 0;
+  // var n = ctx.session.views || 0;
   let n = 1;
-  this.session.views = ++n;
+  ctx.session.views = ++n;
 
-  debug('this.session assignment fninsh')
+  debug('ctx.session assignment fninsh')
 
-  this.body = n + ' views';
+  ctx.body = n + ' views';
 });
 
 app.listen(3000);
